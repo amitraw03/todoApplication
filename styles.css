@@ -1,0 +1,114 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins',sans-serif;
+}
+
+.container{
+    width: 100%;
+    min-height: 100vh;
+    background-image: url(images/pic1jpeg.jpeg);
+    padding: 10px;
+}
+
+.todoApp{
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 540px;
+    margin: 100px auto 10px;
+    padding: 40px 30px 70px;
+    border-radius: 10px;
+}
+
+.todoApp h2{
+   display: flex;
+   align-items: center;
+   color:#002765;
+   margin-bottom: 20px;
+   font-weight: 800;
+}
+
+.todoApp h2 img{
+    width: 30px;
+    margin-left: 10px;
+}
+
+.row{
+    background-color: #edeef0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 30px;
+    margin-left: 5px;
+    margin-bottom: 25px;
+    font-weight: 14px ;
+}
+
+input{
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    padding: 10px;
+    margin-left:15px ;
+}
+
+button{
+    border: none;
+    outline: none;
+    border-radius: 40px;
+    padding: 16px 45px;
+    background: #ff5945;
+    color:#fff;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+ul li{
+    list-style: none;
+    font-size: 17px;
+    padding: 12px 8px 12px 50px;
+    cursor: pointer;
+    user-select: none;  /*to prevent text selection */
+    position: relative;
+}
+
+ul li::before{
+    content:'';
+    position: absolute;
+    height: 28px;
+    width: 28px;
+    border-radius: 50%;
+    background-image: url(images/unchecked.png);
+    background-size: cover;
+    background-position: center;
+    top: 9px;
+    left: 8px;
+}
+
+ul li.checked{
+   color: #555;
+   text-decoration: line-through;
+}
+
+ul li.checked::before{
+    background-image: url(images/checked.png);
+}
+
+ul li span{
+   position: absolute;
+   right: 0px;
+   top: 5px;
+   height: 40px;
+   width: 40px;
+   font-size: 22px;
+   color:#555;
+   line-height: 40px;
+   text-align: center;
+   border-radius: 50%;
+}
+
+ul li span:hover{
+    background: #edeef0;
+}
