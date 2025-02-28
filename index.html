@@ -3,27 +3,571 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
-    <title>To-Do listApp</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>To-Do List App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        :root {
+            --primary-color: #ff5945;
+            --primary-light: #ff8a7d;
+            --primary-dark: #e64a38;
+            --text-dark: #002765;
+            --text-light: #555;
+            --bg-light: #ffffff;
+            --bg-gray: #edeef0;
+            --shadow-light: rgba(0, 0, 0, 0.1);
+            --shadow-dark: rgba(0, 0, 0, 0.2);
+        }
+
+        body {
+            background-color: #f9f9f9;
+        }
+
+        .container {
+            width: 100%;
+            min-height: 100vh;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.55)), url(images/pic1jpeg.jpeg);
+            background-size: cover;
+            background-position: center;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Ambient floating particles */
+        .container::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, transparent 30%, rgba(0, 0, 0, 0.5));
+            z-index: 0;
+        }
+
+        .todoApp {
+            background-color: var(--bg-light);
+            width: 100%;
+            max-width: 540px;
+            margin: 20px auto;
+            padding: 40px 30px 70px;
+            border-radius: 16px;
+            box-shadow: 0 15px 30px var(--shadow-dark);
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+            animation: slideInUp 0.8s ease-out forwards;
+            transform: translateY(50px);
+            opacity: 0;
+        }
+
+        @keyframes slideInUp {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Decorative elements */
+        .todoApp::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, var(--primary-light) 0%, transparent 70%);
+            opacity: 0.5;
+            border-radius: 50%;
+            z-index: -1;
+        }
+
+        .todoApp::after {
+            content: '';
+            position: absolute;
+            bottom: -30px;
+            left: -30px;
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, var(--primary-light) 0%, transparent 70%);
+            opacity: 0.4;
+            border-radius: 50%;
+            z-index: -1;
+        }
+
+        .todoApp h2 {
+            display: flex;
+            align-items: center;
+            color: var(--text-dark);
+            margin-bottom: 30px;
+            font-weight: 700;
+            position: relative;
+            animation: fadeIn 0.6s 0.3s ease forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .todoApp h2 img {
+            width: 35px;
+            margin-left: 10px;
+            filter: drop-shadow(0 2px 4px var(--shadow-light));
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .row {
+            background-color: var(--bg-gray);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-radius: 50px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px var(--shadow-light);
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 0.6s 0.5s ease forwards;
+            opacity: 0;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .row:hover {
+            box-shadow: 0 4px 12px var(--shadow-light);
+        }
+
+        .row::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--primary-color);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .row:focus-within::before {
+            opacity: 1;
+        }
+
+        input {
+            flex: 1;
+            border: none;
+            outline: none;
+            background: transparent;
+            padding: 16px;
+            margin-left: 15px;
+            font-size: 16px;
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+        }
+
+        input::placeholder {
+            color: #aaa;
+            transition: color 0.3s ease;
+        }
+
+        input:focus::placeholder {
+            color: #888;
+        }
+
+        button {
+            border: none;
+            outline: none;
+            border-radius: 50px;
+            padding: 16px 35px;
+            background: var(--primary-color);
+            color: #fff;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            margin-left: 10px;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(255, 89, 69, 0.4);
+        }
+
+        button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 89, 69, 0.5);
+        }
+
+        button:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 8px rgba(255, 89, 69, 0.4);
+        }
+
+        /* Button ripple effect */
+        button::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: scale(0);
+            opacity: 0;
+            transition: all 0.5s ease;
+        }
+
+        button:active::after {
+            transform: scale(2);
+            opacity: 0;
+            transition: 0s;
+        }
+
+        #list-container {
+            padding: 10px 0;
+            position: relative;
+        }
+
+        ul li {
+            list-style: none;
+            font-size: 17px;
+            padding: 14px 8px 14px 50px;
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+            margin-bottom: 10px;
+            background-color: var(--bg-gray);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            animation: fadeInTask 0.5s ease forwards;
+            opacity: 0;
+            transform: translateX(-20px);
+            box-shadow: 0 2px 5px var(--shadow-light);
+        }
+
+        @keyframes fadeInTask {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        ul li:hover {
+            background-color: #e8e9ec;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px var(--shadow-light);
+        }
+
+        ul li::before {
+            content: '';
+            position: absolute;
+            height: 28px;
+            width: 28px;
+            border-radius: 50%;
+            background-image: url(images/unchecked.png);
+            background-size: cover;
+            background-position: center;
+            top: 12px;
+            left: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px var(--shadow-light);
+        }
+
+        ul li.checked {
+            color: var(--text-light);
+            text-decoration: line-through;
+            background-color: rgba(237, 238, 240, 0.7);
+            animation: taskComplete 0.5s ease;
+        }
+
+        @keyframes taskComplete {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+
+        ul li.checked::before {
+            background-image: url(images/checked.png);
+            animation: checkBounce 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes checkBounce {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        ul li span {
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            height: 40px;
+            width: 40px;
+            font-size: 22px;
+            color: var(--text-light);
+            line-height: 40px;
+            text-align: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        ul li span:hover {
+            background: #ff5945;
+            color: white;
+            transform: rotate(90deg);
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-light);
+            font-style: italic;
+            opacity: 0.7;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* Task counter */
+        .task-counter {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: var(--text-light);
+            opacity: 0.8;
+            animation: fadeIn 0.6s 0.7s ease forwards;
+            opacity: 0;
+        }
+
+        /* Task enter animations */
+        ul li:nth-child(1) { animation-delay: 0.1s; }
+        ul li:nth-child(2) { animation-delay: 0.2s; }
+        ul li:nth-child(3) { animation-delay: 0.3s; }
+        ul li:nth-child(4) { animation-delay: 0.4s; }
+        ul li:nth-child(5) { animation-delay: 0.5s; }
+
+        /* Task deletion animation */
+        @keyframes fadeOutRight {
+            to {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+        }
+
+        /* No tasks message */
+        .no-tasks {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-light);
+            font-style: italic;
+            display: none;
+        }
+
+        /* Add animation when task is deleted */
+        .delete-animation {
+            animation: fadeOutRight 0.3s ease forwards;
+        }
+
+        /* Add animation for new task */
+        .new-task-animation {
+            animation: slideInLeft 0.4s ease forwards;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Responsive styles */
+        @media (max-width: 580px) {
+            .todoApp {
+                margin: 0;
+                padding: 30px 20px 50px;
+                border-radius: 0;
+                height: 100vh;
+                max-width: 100%;
+                overflow-y: auto;
+            }
+
+            button {
+                padding: 14px 25px;
+                font-size: 14px;
+            }
+
+            input {
+                padding: 14px;
+                font-size: 14px;
+            }
+
+            ul li {
+                font-size: 16px;
+                padding: 12px 8px 12px 45px;
+            }
+        }
+    </style>
 </head>
 <body>
-    
     <div class="container">
         <div class="todoApp">
-            <h2>To-Do List <img src="images/icon.png" alt=""></h2>
+            <h2>To-Do List <img src="images/icon.png" alt="To-Do List icon"></h2>
             <div class="row">
-                <input type="text" id="input-box" placeholder="Add your text">
-                <button onclick="addTask()" >Add</button>
+                <input type="text" id="input-box" placeholder="Add your task here...">
+                <button onclick="addTask()">Add</button>
+            </div>
+            <div class="empty-state" id="empty-state">
+                No tasks yet. Add a task to get started!
             </div>
             <ul id="list-container">
-                  <!-- <li class="checked">Task 1</li>
-                  <li>task 2</li>
-                  <li>task 3</li> -->
+                <!-- Tasks will be added here -->
             </ul>
+            <div class="task-counter" id="task-counter">
+                You have <span id="tasks-count">0</span> tasks
+            </div>
         </div>
-        
     </div>
 
-     <script src="script.js"></script>
+    <script>
+        const inputBox = document.getElementById("input-box");
+        const listContainer = document.getElementById("list-container");
+        const emptyState = document.getElementById("empty-state");
+        const tasksCounter = document.getElementById("tasks-count");
+
+        // Update task counter and empty state visibility
+        function updateTasksState() {
+            const taskCount = listContainer.children.length;
+            tasksCounter.textContent = taskCount;
+            
+            if (taskCount === 0) {
+                emptyState.style.display = "block";
+            } else {
+                emptyState.style.display = "none";
+            }
+        }
+
+        // Show ripple effect on button
+        function createRipple(event) {
+            const button = event.currentTarget;
+            const circle = document.createElement("span");
+            const diameter = Math.max(button.clientWidth, button.clientHeight);
+            
+            circle.style.width = circle.style.height = `${diameter}px`;
+            circle.style.left = `${event.clientX - button.offsetLeft - diameter / 2}px`;
+            circle.style.top = `${event.clientY - button.offsetTop - diameter / 2}px`;
+            circle.classList.add("ripple");
+            
+            const ripple = button.getElementsByClassName("ripple")[0];
+            if (ripple) {
+                ripple.remove();
+            }
+            
+            button.appendChild(circle);
+        }
+
+        function addTask() {
+            if (inputBox.value.trim() === '') {
+                // Give subtle shake animation to input
+                inputBox.classList.add("input-error");
+                setTimeout(() => {
+                    inputBox.classList.remove("input-error");
+                }, 500);
+                
+                // Focus input box
+                inputBox.focus();
+            } else {
+                let li = document.createElement("li");
+                li.innerHTML = inputBox.value;
+                li.classList.add("new-task-animation");
+                listContainer.appendChild(li);
+                
+                let span = document.createElement("span");
+                span.innerHTML = "\u00d7";
+                li.appendChild(span);
+                
+                // Clear the input box after adding the task
+                inputBox.value = '';
+                saveData();
+                updateTasksState();
+                
+                // Focus back to input for quick entry of multiple tasks
+                inputBox.focus();
+            }
+        }
+
+        listContainer.addEventListener("click", (e) => {
+            // If an LI element is clicked
+            if (e.target.tagName === "LI") {
+                e.target.classList.toggle("checked");
+                saveData();
+            }
+            // If the X span is clicked
+            else if (e.target.tagName === "SPAN") {
+                // Add fadeout animation
+                e.target.parentElement.classList.add("delete-animation");
+                
+                // Wait for animation to complete before removing
+                setTimeout(() => {
+                    e.target.parentElement.remove();
+                    saveData();
+                    updateTasksState();
+                }, 300);
+            }
+        }, false);
+
+        function saveData() {
+            localStorage.setItem("data", listContainer.innerHTML);
+            updateTasksState();
+        }
+
+        function showTask() {
+            listContainer.innerHTML = localStorage.getItem("data") || "";
+            updateTasksState();
+        }
+
+        // Handle Enter key press in input box
+        inputBox.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+                addTask();
+                e.preventDefault();
+            }
+        });
+
+        // Initialize button ripple effects
+        document.querySelector("button").addEventListener("click", createRipple);
+
+        // Show tasks with staggered animation on load
+        document.addEventListener("DOMContentLoaded", () => {
+            showTask();
+            
+            // Apply staggered animation to existing tasks
+            const tasks = listContainer.querySelectorAll("li");
+            tasks.forEach((task, index) => {
+                task.style.animationDelay = `${0.1 + (index * 0.1)}s`;
+            });
+        });
+    </script>
 </body>
 </html>
